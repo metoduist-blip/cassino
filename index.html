@@ -483,15 +483,19 @@ input{font-family:'Inter',sans-serif;}
 .sup-msg.agent{align-self:flex-start;background:#000;border:1px solid rgba(192,200,216,.4);box-shadow:inset 0 0 14px rgba(192,200,216,.06);color:#fff;border-bottom-left-radius:4px;}
 .sup-msg-time{font-size:9px;color:rgba(255,255,255,.35);margin-top:4px;}
 .sup-msg.img-only{background:none !important;border:none !important;box-shadow:none !important;padding:4px 0;}
+.sup-lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;cursor:pointer;}
+.sup-lightbox.on{display:flex;}
+.sup-lightbox img{max-width:100%;max-height:100%;border-radius:8px;}
+.sup-lightbox-close{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .sup-msg-img{max-width:200px;border-radius:10px;cursor:pointer;}
-.sup-input-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.5);}
-.sup-input{flex:1;height:40px;padding:0 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:20px;color:#fff;font-size:13px;outline:none;}
-.sup-input:focus{border-color:rgba(255,255,255,.2);}
+.sup-input-bar{display:flex;align-items:flex-end;gap:8px;padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.5);}
+.sup-input{flex:1;min-height:40px;max-height:120px;padding:10px 14px;background:#000;border:1px solid rgba(255,215,0,.5);box-shadow:inset 0 0 12px rgba(255,215,0,.06);border-radius:18px;color:#fff;font-size:13px;outline:none;font-family:'Inter',sans-serif;resize:none;line-height:20px;overflow-y:auto;}
+.sup-input:focus{border-color:rgba(255,215,0,.8);}
 .sup-input::placeholder{color:rgba(255,255,255,.3);}
 .sup-attach-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--silver2);cursor:pointer;font-size:16px;transition:.15s;flex-shrink:0;}
 .sup-attach-btn:hover{color:#fff;}
-.sup-send-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(26,79,214,.5);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.15s;flex-shrink:0;}
-.sup-send-btn:hover{background:rgba(26,79,214,.7);}
+.sup-send-btn{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,215,0,.5);background:#000;box-shadow:inset 0 0 12px rgba(255,215,0,.1);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.15s;flex-shrink:0;}
+.sup-send-btn:hover{border-color:rgba(255,215,0,.8);}
 </style>
 </head>
 <body>
@@ -636,8 +640,12 @@ input{font-family:'Inter',sans-serif;}
         <button class="sup-email-btn" onclick=""><i class="fas fa-envelope"></i></button>
       </div>
       <div class="sup-msgs" id="sup-msgs"></div>
+      <div class="sup-lightbox" id="sup-lightbox" onclick="closeSupLightbox()">
+        <button class="sup-lightbox-close" onclick="event.stopPropagation();closeSupLightbox()"><i class="fas fa-times"></i></button>
+        <img id="sup-lightbox-img" src="" alt="">
+      </div>
       <div class="sup-input-bar">
-        <input class="sup-input" id="sup-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendSupMsg()">
+        <textarea class="sup-input" id="sup-input" placeholder="Type a message..." rows="1" oninput="autoResizeSupInput(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendSupMsg()}"></textarea>
         <label class="sup-attach-btn">
           <i class="fas fa-paperclip"></i>
           <input type="file" accept="image/*" style="display:none" onchange="sendSupImage(event)">
@@ -2183,13 +2191,27 @@ function showLockScreen(msg){
 }
 
 
+
+function openSupLightbox(src){
+  document.getElementById('sup-lightbox-img').src=src;
+  document.getElementById('sup-lightbox').classList.add('on');
+}
+function closeSupLightbox(){
+  document.getElementById('sup-lightbox').classList.remove('on');
+}
+
+function autoResizeSupInput(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+}
+
 function loadSupport(){
   if(!CU)return;
   const msgs=document.getElementById('sup-msgs');
   if(!msgs)return;
   db.ref('support_chats/'+CU.key+'/messages').orderByChild('ts').on('value',snap=>{
     msgs.innerHTML='';
-    if(!snap.exists()){msgs.innerHTML='<div style="text-align:center;color:rgba(255,255,255,.3);padding:40px;font-size:12px;">No messages yet. Send a message to get help.</div>';return;}
+    if(!snap.exists()){msgs.innerHTML='';return;}
     const all=snap.val();
     Object.keys(all).sort((a,b)=>(all[a].ts||0)-(all[b].ts||0)).forEach(k=>{
       const m=all[k];
@@ -2198,7 +2220,7 @@ function loadSupport(){
       div.className='sup-msg '+(m.from==='user'?'user':'agent')+(isImgOnly?' img-only':'');
       let content='';
       if(m.imageUrl){
-        content+='<img class="sup-msg-img" src="'+m.imageUrl+'" onclick="window.open(this.src)">';
+        content+='<img class="sup-msg-img" src="'+m.imageUrl+'" onclick="openSupLightbox(this.src)">';
       }
       if(m.text)content+='<div>'+m.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
       const d=new Date(m.ts||0);
@@ -2221,6 +2243,7 @@ function sendSupMsg(){
   const text=(inp.value||'').trim();
   if(!text)return;
   inp.value='';
+  inp.style.height='40px';
   const ref=db.ref('support_chats/'+CU.key+'/messages').push();
   ref.set({text:text,from:'user',ts:Date.now(),read:false});
   db.ref('support_chats/'+CU.key+'/lastMsg').set({text:text,from:'user',ts:Date.now(),read:false});
