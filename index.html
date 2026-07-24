@@ -549,7 +549,13 @@ input{font-family:'Inter',sans-serif;}
 
 .kyc-btn-blue{background:#2563eb !important;color:#fff !important;}
 .kyc-btn-blue:hover{background:#1d4ed8 !important;}
-.kyc-dob-input{cursor:pointer;caret-color:transparent;}
+.kyc-dob-wrap{position:relative;margin-bottom:12px;}
+.kyc-dob-real{width:100%;height:48px;padding:0 14px;border-radius:10px;border:1.5px solid #d1d5db;background:#fff;color:#111;font-size:14px;outline:none;font-family:'Inter',sans-serif;transition:.15s;cursor:pointer;-webkit-appearance:none;appearance:none;}
+.kyc-dob-real:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.kyc-dob-real::-webkit-date-and-time-value{text-align:left;}
+.kyc-dob-real:invalid+.kyc-dob-label{display:block;}
+.kyc-dob-real:valid+.kyc-dob-label{display:none;}
+.kyc-dob-label{position:absolute;top:50%;left:14px;transform:translateY(-50%);font-size:14px;color:#9ca3af;pointer-events:none;}
 .kyc-photo-area{min-height:200px;border-radius:16px;border:2px dashed #d1d5db;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-top:8px;background:#f9fafb;}
 .kyc-photo-area.has-photo{border-style:solid;border-color:#2563eb;}
 .kyc-photo-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;cursor:pointer;width:100%;}
@@ -2459,7 +2465,7 @@ function openKyc(){
   if(CU.kycStatus==='approved'){showToast('Already verified.','tg');return;}
   if(CU.kycStatus==='pending'){showToast('Under review.','tg');return;}
   _kyc={first:'',middle:'',last:'',dob:'',doc:'',docImg:'',selfies:[]};
-  ['kyc-first','kyc-middle','kyc-last','kyc-dob'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['kyc-first','kyc-middle','kyc-last','kyc-dob'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';delete el.dataset.val;}});
   kycShow(1);
   document.getElementById('kyc-overlay').classList.add('show');
 }
@@ -2473,10 +2479,12 @@ function kycToCamera(){
   const f=document.getElementById('kyc-first').value.trim();
   const m=document.getElementById('kyc-middle').value.trim();
   const l=document.getElementById('kyc-last').value.trim();
-  const d=document.getElementById('kyc-dob').dataset.val||'';
+  const d=document.getElementById('kyc-dob').value||'';
   if(!f||!l){showToast('Enter first and last name.','tl');return;}
   if(!d){showToast('Select date of birth.','tl');return;}
-  const age=(Date.now()-new Date(d).getTime())/31557600000;
+  const dobDate=new Date(d);
+  if(isNaN(dobDate.getTime())){showToast('Invalid date.','tl');return;}
+  const age=(Date.now()-dobDate.getTime())/31557600000;
   if(age<18){showToast('Must be 18+.','tl');return;}
   _kyc.first=f;_kyc.middle=m;_kyc.last=l;_kyc.dob=d;
   kycShow(2);
@@ -2591,20 +2599,6 @@ let _kycPhotos=[];
 
 function kycLatinOnly(el){
   el.value=el.value.replace(/[^a-zA-Z\s'-]/g,'');
-}
-
-function kycOpenDatePicker(){
-  const hidden=document.getElementById('kyc-dob-hidden');
-  if(hidden)hidden.showPicker?hidden.showPicker():hidden.click();
-}
-
-function kycDateSelected(el){
-  if(!el.value)return;
-  const parts=el.value.split('-');
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const display=parts[2]+' '+months[parseInt(parts[1],10)-1]+' '+parts[0];
-  document.getElementById('kyc-dob').value=display;
-  document.getElementById('kyc-dob').dataset.val=el.value;
 }
 
 function kycPickDoc(btn){
@@ -2924,8 +2918,10 @@ async function confirmConvert(){
     <input class="kyc-input" id="kyc-first" type="text" placeholder="First Name" oninput="kycLatinOnly(this)">
     <input class="kyc-input" id="kyc-middle" type="text" placeholder="Middle Name" oninput="kycLatinOnly(this)">
     <input class="kyc-input" id="kyc-last" type="text" placeholder="Last Name" oninput="kycLatinOnly(this)">
-    <input class="kyc-input kyc-dob-input" id="kyc-dob" type="text" placeholder="Date of Birth" readonly onclick="kycOpenDatePicker()" onfocus="kycOpenDatePicker()">
-    <input type="date" id="kyc-dob-hidden" style="position:absolute;opacity:0;pointer-events:none;" onchange="kycDateSelected(this)">
+    <div class="kyc-dob-wrap">
+      <input class="kyc-input kyc-dob-real" id="kyc-dob" type="date" required>
+      <div class="kyc-dob-label" id="kyc-dob-label">Date of Birth</div>
+    </div>
     <button class="kyc-next kyc-btn-blue" onclick="kycToCamera()">Continue</button>
   </div>
   <div class="kyc-step" id="kyc-step-2">
