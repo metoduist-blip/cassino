@@ -446,14 +446,7 @@ input{font-family:'Inter',sans-serif;}
 
 .inv-page{flex:1;display:flex;flex-direction:column;padding:24px 16px;gap:18px;background:radial-gradient(ellipse 100% 60% at 0% 0%,#0f2547 0%,transparent 55%),radial-gradient(ellipse 100% 60% at 100% 100%,#0f2547 0%,transparent 55%),#000;overflow-y:auto;}
 .inv-hero{font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:#fff;line-height:1.55;text-align:center;padding:16px 8px;}
-.inv-card{background:#0a0a0c;border:1px solid rgba(255,215,0,.4);box-shadow:inset 0 0 24px rgba(255,215,0,.06);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;}
 .inv-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.8px;}
-.inv-code-row{display:flex;align-items:center;gap:10px;}
-.inv-code{flex:1;font-family:'Orbitron',sans-serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.inv-link{flex:1;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.inv-copy-btn{flex-shrink:0;height:38px;padding:0 16px;border-radius:var(--r);border:1px solid rgba(255,215,0,.4);background:transparent;color:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;}
-.inv-copy-btn:hover{border-color:rgba(255,215,0,.7);background:rgba(255,215,0,.06);}
-.inv-copy-btn:active{transform:scale(.97);}
 @keyframes goldShimmer{
 0%{background-position:-200% center;}
 100%{background-position:200% center;}
@@ -525,6 +518,27 @@ input{font-family:'Inter',sans-serif;}
 .kyc-doc-preview{width:100%;border-radius:12px;margin-top:14px;border:1px solid rgba(192,200,216,.3);}
 .kyc-done{text-align:center;font-size:54px;color:#3fd07f;margin-bottom:12px;}
 .kyc-status{display:none;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:12px;border:1.5px solid rgba(63,208,127,.5);background:rgba(31,157,85,.12);color:#7ee2a8;font-size:13px;font-weight:800;letter-spacing:.6px;}
+
+.inv-card-new{background:radial-gradient(ellipse 110% 75% at 0% 0%,#0f2547 0%,transparent 55%),radial-gradient(ellipse 110% 75% at 100% 100%,#0f2547 0%,transparent 55%),#000;border:1.5px solid var(--silver-border2);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;}
+.inv-code-row-new{display:flex;align-items:center;gap:10px;}
+.inv-code-val{flex:1;font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.inv-link-val{flex:1;font-size:11px;font-weight:500;color:rgba(255,255,255,.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.inv-copy-new{width:38px;height:38px;flex-shrink:0;border-radius:10px;border:1.5px solid var(--silver-border2);background:transparent;color:var(--silver2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.15s;}
+.inv-copy-new:hover{border-color:var(--silver2);color:#fff;}
+.inv-copy-new:active{transform:scale(.95);}
+.inv-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.inv-stat-box{background:radial-gradient(ellipse 110% 75% at 0% 0%,#0f2547 0%,transparent 55%),radial-gradient(ellipse 110% 75% at 100% 100%,#0f2547 0%,transparent 55%),#000;border:1.5px solid var(--silver-border2);border-radius:14px;padding:16px;text-align:center;}
+.inv-stat-num{font-size:22px;font-weight:800;color:#fff;}
+.inv-stat-lbl{font-size:10px;color:rgba(255,255,255,.45);margin-top:4px;font-weight:600;letter-spacing:.3px;}
+.inv-person{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.inv-person:last-child{border-bottom:none;}
+.inv-avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--silver2);flex-shrink:0;}
+.inv-person-info{flex:1;min-width:0;}
+.inv-person-name{font-size:13px;font-weight:700;color:#fff;}
+.inv-person-email{font-size:10px;color:rgba(255,255,255,.35);margin-top:1px;}
+.inv-person-status{flex-shrink:0;font-size:12px;font-weight:700;}
+.inv-person-status.earned{color:#3fd07f;}
+.inv-person-status.pending{color:rgba(255,255,255,.3);}
 </style>
 </head>
 <body>
@@ -646,20 +660,31 @@ input{font-family:'Inter',sans-serif;}
   <div class="view" id="v-invite">
     <div class="inv-page">
       <div class="inv-hero">Invite a friend and get a bonus of up to €10 after meeting the conditions.</div>
-      <div class="inv-card">
+      <div class="inv-card-new">
         <div class="inv-lbl">Your Invite Code</div>
-        <div class="inv-code-row">
-          <div class="inv-code" id="inv-code">—</div>
-          <button class="inv-copy-btn" onclick="copyInvCode()">Copy</button>
+        <div class="inv-code-row-new">
+          <div class="inv-code-val" id="inv-code">—</div>
+          <button class="inv-copy-new" onclick="copyInvCode()"><i class="fas fa-copy"></i></button>
         </div>
       </div>
-      <div class="inv-card">
+      <div class="inv-card-new">
         <div class="inv-lbl">Your Invite Link</div>
-        <div class="inv-code-row">
-          <div class="inv-link" id="inv-link">—</div>
-          <button class="inv-copy-btn" onclick="copyInvLink()">Copy</button>
+        <div class="inv-code-row-new">
+          <div class="inv-link-val" id="inv-link">—</div>
+          <button class="inv-copy-new" onclick="copyInvLink()"><i class="fas fa-copy"></i></button>
         </div>
       </div>
+      <div class="inv-stats">
+        <div class="inv-stat-box">
+          <div class="inv-stat-num" id="inv-total">0</div>
+          <div class="inv-stat-lbl">People Invited</div>
+        </div>
+        <div class="inv-stat-box">
+          <div class="inv-stat-num" id="inv-earned">€0.00</div>
+          <div class="inv-stat-lbl">Total Earned</div>
+        </div>
+      </div>
+      <div id="inv-people-list"></div>
     </div>
   </div>
 
@@ -939,6 +964,7 @@ input{font-family:'Inter',sans-serif;}
       <div class="field" style="margin-bottom:14px;"><input class="finput reg-input" type="email" id="r-em" placeholder="Email Address" autocomplete="email" oninput="enforceEmail(this);clearErr('r-err2')"></div>
       <div class="pw-wrap" style="margin-bottom:14px;"><input class="pw-in reg-input" type="password" id="r-pw" placeholder="Password" autocomplete="new-password" oninput="clearErr('r-err2')"><span class="pw-eye" onclick="togglePw('r-pw',this)"><i class="fas fa-eye-slash"></i></span></div>
       <div class="pw-wrap" style="margin-bottom:14px;"><input class="pw-in reg-input" type="password" id="r-pw2" placeholder="Confirm Password" autocomplete="new-password" oninput="clearErr('r-err2')"><span class="pw-eye" onclick="togglePw('r-pw2',this)"><i class="fas fa-eye-slash"></i></span></div>
+      <div class="pw-wrap" style="margin-bottom:14px;"><input class="pw-in reg-input" id="r-invite-code" placeholder="Invite code (optional)" maxlength="9" autocomplete="off" oninput="clearErr('r-err2')"></div>
       <div class="checks" style="gap:12px;margin-bottom:14px;">
         <label class="chk reg-chk"><input type="checkbox" id="r-terms"><span class="reg-chk-txt">I agree to the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a>. (Required)</span></label>
         <label class="chk reg-chk"><input type="checkbox" id="r-mkt"><span class="reg-chk-txt">I do not wish to receive marketing messages about bonuses, offers and services.</span></label>
@@ -2155,6 +2181,15 @@ function generateInvCode(){
   return code;
 }
 
+function maskEmail(e){
+  if(!e||e.length<5)return'****';
+  const parts=e.split('@');
+  if(parts.length!==2)return e[0]+'***'+e[e.length-1];
+  const u=parts[0],d=parts[1];
+  const masked=u.length<=2?u[0]+'*':u[0]+u[1]+'*'.repeat(Math.max(1,u.length-3))+u[u.length-1];
+  return masked+'@'+d;
+}
+
 function loadInvite(){
   if(!CU)return;
   const codeEl=document.getElementById('inv-code');
@@ -2171,6 +2206,58 @@ function loadInvite(){
     const baseUrl=location.origin+location.pathname;
     linkEl.textContent=baseUrl+'?ref='+code;
   });
+
+  db.ref('casino_users/'+CU.key+'/referrals').on('value',snap=>{
+    const refs=snap.val()||{};
+    const keys=Object.keys(refs);
+    document.getElementById('inv-total').textContent=keys.length;
+    let totalEarned=0;
+    const list=document.getElementById('inv-people-list');
+    if(!keys.length){list.innerHTML='';return;}
+    let html='';
+    let loaded=0;
+    keys.forEach(rKey=>{
+      db.ref('casino_users/'+rKey).once('value').then(uSnap=>{
+        loaded++;
+        const u=uSnap.val();
+        if(!u)return;
+        const nm=((u.firstName||'')+(u.lastName?' '+u.lastName:'')).trim()||'User';
+        const initials=(nm.split(' ').map(w=>w[0]||'').join('').substring(0,2)).toUpperCase();
+        const em=maskEmail(u.email||'');
+        const isKyc=u.kycStatus==='approved';
+        const hasDep=(parseFloat(u.depositTotal)||0)>=10;
+        const bonusPaid=refs[rKey]?.bonusPaid||false;
+        let statusIcon,statusClass,statusText;
+        if(bonusPaid){
+          statusIcon='<i class="fas fa-check"></i>';statusClass='earned';statusText='+€10';
+          totalEarned+=10;
+        }else if(isKyc&&hasDep&&!bonusPaid){
+          giveReferralBonus(rKey);
+          statusIcon='<i class="fas fa-check"></i>';statusClass='earned';statusText='+€10';
+          totalEarned+=10;
+        }else{
+          statusIcon='<i class="fas fa-clock"></i>';statusClass='pending';statusText='Pending';
+        }
+        html+='<div class="inv-person"><div class="inv-avatar">'+initials+'</div><div class="inv-person-info"><div class="inv-person-name">'+nm+'</div><div class="inv-person-email">'+em+'</div></div><div class="inv-person-status '+statusClass+'">'+statusIcon+' '+statusText+'</div></div>';
+        if(loaded>=keys.length){
+          list.innerHTML=html;
+          document.getElementById('inv-earned').textContent='€'+totalEarned.toFixed(2);
+        }
+      });
+    });
+  });
+}
+
+async function giveReferralBonus(referredKey){
+  if(!CU)return;
+  const already=await db.ref('casino_users/'+CU.key+'/referrals/'+referredKey+'/bonusPaid').get();
+  if(already.exists()&&already.val())return;
+  const oldBal=parseFloat(CU.balance)||0;
+  const newBal=oldBal+10;
+  await db.ref('casino_users/'+CU.key+'/balance').set(newBal);
+  await db.ref('casino_users/'+CU.key+'/referrals/'+referredKey+'/bonusPaid').set(true);
+  await db.ref('casino_users/'+CU.key+'/referrals/'+referredKey+'/bonusAt').set(Date.now());
+  CU.balance=newBal;
 }
 
 function copyInvCode(){
@@ -2194,8 +2281,15 @@ function checkReferral(){
 }
 checkReferral();
 
+function getRefCodeForReg(){
+  const field=document.getElementById('r-invite-code');
+  const fieldVal=(field?.value||'').trim();
+  if(fieldVal.length===9)return fieldVal;
+  return localStorage.getItem('cc_ref')||'';
+}
+
 function saveReferral(newUserKey){
-  const refCode=localStorage.getItem('cc_ref');
+  const refCode=getRefCodeForReg();
   if(!refCode)return;
   db.ref('casino_users').orderByChild('inviteCode').equalTo(refCode).once('value').then(snap=>{
     if(!snap.exists())return;
